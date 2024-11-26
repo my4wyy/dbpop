@@ -4,7 +4,12 @@ import com.maisapires.todosimple.models.User;
 import com.maisapires.todosimple.models.UserProfile;
 import com.maisapires.todosimple.repositories.UserProfileRepository;
 import com.maisapires.todosimple.repositories.UserRepository;
+import com.maisapires.todosimple.security.UserSpringSecurity;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -99,5 +104,15 @@ public class UserService implements UserDetailsService {
     
         return userRepository.save(existingUser);
     }
+
+    public static UserSpringSecurity authenticated() {
+        // Implementação para obter o usuário autenticado
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated() || auth instanceof AnonymousAuthenticationToken) {
+            return null;
+        }
+        return (UserSpringSecurity) auth.getPrincipal();
+    }
+
     
 }
